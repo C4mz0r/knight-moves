@@ -21,6 +21,10 @@ class Node
 		@name = row_value.to_s + col_value.to_s
 	end
 
+	def Node.childPointers
+		["child_UL", "child_UR", "child_RU", "child_RD", "child_LU", "child_LD", "child_DL", "child_DR" ]
+	end
+
 end
 
 
