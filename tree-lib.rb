@@ -13,7 +13,7 @@ class Node
 	attr_accessor :child_LD
 	attr_accessor :child_DL
 	attr_accessor :child_DR
-	#@root = nil
+
 
 	def initialize(row_value, col_value)
 		@row_value = row_value
