@@ -1,6 +1,8 @@
 require 'colorize'
 require './tree-lib.rb'
 
+BOARD_SIZE = 8 # Board size, 8 denotes standard 8x8 chess board
+
 class KnightTravails
 
 	attr_accessor :node_list	
@@ -12,22 +14,18 @@ class KnightTravails
 
 		@node_list = []
 
-		for row in (0...8) do
-			for col in (0...8) do
+		for row in (0...BOARD_SIZE) do
+			for col in (0...BOARD_SIZE) do
 				@node_list << Node.new(row, col)
 			end
 		end
 
 		# update each node's pointers to show possible places it can get to
 		node_list.each do |node|
-			node.child_UL = get_node_by_coordinates( node.row_value - 2, node.col_value - 1 )
-			node.child_UR = get_node_by_coordinates( node.row_value - 2, node.col_value + 1 )
-			node.child_RU = get_node_by_coordinates( node.row_value - 1, node.col_value + 2 )
-			node.child_RD = get_node_by_coordinates( node.row_value + 1, node.col_value + 2 )
-			node.child_LU = get_node_by_coordinates( node.row_value - 1, node.col_value - 2 )
-			node.child_LD = get_node_by_coordinates( node.row_value + 1, node.col_value - 2 )
-			node.child_DL = get_node_by_coordinates( node.row_value + 2, node.col_value - 1 )
-			node.child_DR = get_node_by_coordinates( node.row_value + 2, node.col_value + 1 )
+			Node.childPointers.each do |child|								
+				offsets = eval("Node.knight_offsets('#{child}')")
+				eval("node.#{child} = get_node_by_coordinates( node.row_value + offsets[:row], node.col_value + offsets[:col] )")
+			end			
 		end
 
 		
@@ -38,9 +36,9 @@ class KnightTravails
 	# return the node from the array that is at a given coordinate (note: rows and cols are 0-based)
 	# returns nil if out of bounds
 	def get_node_by_coordinates( node_row, node_col )
-		return nil if ( node_row < 0 or node_row >= 8)
-		return nil if ( node_col < 0 or node_col >= 8)
-		return @node_list[ 8 * node_row + node_col ]
+		return nil if ( node_row < 0 or node_row >= BOARD_SIZE)
+		return nil if ( node_col < 0 or node_col >= BOARD_SIZE)
+		return @node_list[ BOARD_SIZE * node_row + node_col ]
 	end
 
 	# Used for debugging
@@ -48,14 +46,10 @@ class KnightTravails
 		puts "Node name is #{node.name}".colorize(:yellow)
 		puts "Node row, col is #{node.row_value}, #{node.col_value}".colorize(:yellow)
 		puts "Node prev = #{node.prev} (#{node.prev.name if !node.prev.nil?})".colorize(:blue)
-		puts "Node UL = #{node.child_UL}".colorize(:yellow)
-		puts "Node UR = #{node.child_UR}".colorize(:yellow)
-		puts "Node RU = #{node.child_RU}".colorize(:yellow)
-		puts "Node RD = #{node.child_RD}".colorize(:yellow)
-		puts "Node LU = #{node.child_LU}".colorize(:yellow)
-		puts "Node LD = #{node.child_LD}".colorize(:yellow)
-		puts "Node DL = #{node.child_DL}".colorize(:yellow)
-		puts "Node DR = #{node.child_DR}".colorize(:yellow)
+		
+		Node.childPointers.each do |child|								
+			puts (("#{child} = ") + eval("node.#{child}").to_s).colorize(:yellow)
+		end		
 	end
 
 	# Returns the node which contains the target value, nil otherwise
@@ -108,7 +102,7 @@ end
 journey = KnightTravails.new
 journey.build_tree
 puts journey.knight_moves( [0,0],[3,3])
-
+#journey.print_node(journey.node_list[0])
 #node_list = build_tree
 #puts knight_moves( node_list, [0,0],[1,2])
 #puts knight_moves( node_list, [3,3],[4,3])

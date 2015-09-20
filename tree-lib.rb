@@ -24,6 +24,29 @@ class Node
 	def Node.childPointers
 		["child_UL", "child_UR", "child_RU", "child_RD", "child_LU", "child_LD", "child_DL", "child_DR" ]
 	end
+	
+	def Node.knight_offsets(key)
+		offset = case key
+		when "child_UL"
+			{ row: -2, col: -1 } 
+		when "child_UR"
+			{row: -2, col: +1 }
+		when "child_RU"
+			{row: -1, col: +2 }
+		when "child_RD"
+			{row: +1, col: +2 }
+		when "child_LU"
+			{row: -1, col: -2 }
+		when "child_LD"
+			{row: +1, col: -2 }
+		when "child_DL"
+			{row: +2, col: -1 }
+		when "child_DR"
+			{row: +2, col: +1 }		
+		else
+			puts "Could not find entry according to key: #{key}"
+		end
+	end
 
 end
 
